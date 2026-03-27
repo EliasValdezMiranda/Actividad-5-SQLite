@@ -50,7 +50,7 @@ def agregarProducto():
     conn = conexionDB()
     
     # Se ejecuta el comando de inserción en la tabla 'productos' de la base de datos
-    cursor.execute("""
+    conn.execute("""
                     INSERT INTO productos(nombre, precio, stock)
                     VALUES(?,?,?)
                     """, (data["nombre"], data["precio"], data["stock"]))
