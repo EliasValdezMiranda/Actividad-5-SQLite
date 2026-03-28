@@ -155,6 +155,103 @@ def filtradoPrecioMenor(precio):
     conn.close()
     return jsonify(productos), 200
 
+@app.route('/productos/filtrar/precio/minimo', methods=['GET'])
+def filtrarPrecioMinimo():
+    # Se crea una conexión a la base de datos y se toma un cursor de este
+    conn = conexionDB()
+    cursor = conn.cursor()
+    
+    # Se buscan los productos con el menor precio
+    cursor.execute('SELECT * FROM productos WHERE precio = (SELECT MIN(precio) FROM productos)')
+    
+    # Se extraen los datos del cursor y se guardan en la lista 'productos'
+    datos = cursor.fetchall()
+    productos = []
+    for fila in datos:
+        productos.append({
+            "id": fila[0],
+            "nombre": fila[1],
+            "precio": fila[2],
+            "stock": fila[3]
+        })
+    
+    # Se cierra la conexión y se regresan los productos encontrados en formato JSON
+    conn.close()
+    return jsonify(productos), 200
+
+@app.route('/productos/filtrar/precio/maximo', methods=['GET'])
+def filtrarPrecioMaximo():
+    # Se crea una conexión a la base de datos y se toma un cursor de este
+    conn = conexionDB()
+    cursor = conn.cursor()
+    
+    # Se buscan los productos con el precio más grande
+    cursor.execute('SELECT * FROM productos WHERE precio = (SELECT MAX(precio) FROM productos)')
+
+    # Se extraen los datos del cursor y se guardan en la lista 'productos'
+    datos = cursor.fetchall()
+    productos = []
+    for fila in datos:
+        productos.append({
+            "id": fila[0],
+            "nombre": fila[1],
+            "precio": fila[2],
+            "stock": fila[3]
+        })
+    
+    # Se cierra la conexión y se regresan los productos encontrados en formato JSON
+    conn.close()
+    return jsonify(productos), 200
+
+# Búsqueda de productos con stock nulo
+@app.route('/productos/filtrar/stock/agotado', methods=['GET'])
+def filtrarProductosSinStock():
+    # Se crea una conexión a la base de datos y se toma un cursor de este
+    conn = conexionDB()
+    cursor = conn.cursor()
+    
+    # Se buscan los productos con stock nulo
+    cursor.execute('SELECT * FROM productos WHERE stock = 0')
+
+    # Se extraen los datos del cursor y se guardan en la lista 'productos'
+    datos = cursor.fetchall()    
+    productos = []
+    for fila in datos:
+        productos.append({
+            "id": fila[0],
+            "nombre": fila[1],
+            "precio": fila[2],
+            "stock": fila[3]
+        })
+    
+    # Se cierra la conexión y se regresan los productos encontrados en formato JSON
+    conn.close()
+    return jsonify(productos), 200
+
+# Búsqueda de productos con stock
+@app.route('/productos/filtrar/stock/disponible', methods=['GET'])
+def filtrarProductosConStock():
+    # Se crea una conexión a la base de datos y se toma un cursor de este
+    conn = conexionDB()
+    cursor = conn.cursor()
+    
+    # Se buscan los productos que tengan stock
+    cursor.execute('SELECT * FROM productos WHERE stock > 0')
+
+    # Se extraen los datos del cursor y se guardan en la lista 'productos'
+    datos = cursor.fetchall()
+    productos = []
+    for fila in datos:
+        productos.append({
+            "id": fila[0],
+            "nombre": fila[1],
+            "precio": fila[2],
+            "stock": fila[3]
+        })
+        
+    # Se cierra la conexión y se regresan los productos encontrados en formato JSON
+    conn.close()
+    return jsonify(productos), 200
 
 # Instrucción para empezar la aplicación Flask
 app.run(debug=True)
