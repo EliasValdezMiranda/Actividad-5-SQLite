@@ -253,5 +253,105 @@ def filtrarProductosConStock():
     conn.close()
     return jsonify(productos), 200
 
+# Búsqueda de productos con precio mayor al promedio
+@app.route('/productos/filtrar/precio/sobre/promedio', methods=['GET'])
+def filtrarPrecioSobrePromedio():
+    # Se crea una conexión a la base de datos y se toma un cursor de este
+    conn = conexionDB()
+    cursor = conn.cursor()
+
+    # Se buscan los productos que tengan un precio mayor al precio promedio
+    cursor.execute('SELECT * FROM productos WHERE precio > (SELECT AVG(precio) FROM productos)')
+
+    # Se extraen los datos del cursor y se guardan en la lista 'productos'
+    datos = cursor.fetchall()
+    productos = []
+    for fila in datos:
+        productos.append({
+            "id": fila[0],
+            "nombre": fila[1],
+            "precio": fila[2],
+            "stock": fila[3]
+        })
+
+    # Se cierra la conexión y se regresan los productos encontrados en formato JSON
+    conn.close()
+    return jsonify(productos), 200
+
+# Búsqueda de productos con precio debajo del promedio
+@app.route('/productos/filtrar/precio/bajo/promedio', methods=['GET'])
+def filtrarPrecioBajoPromedio():
+    # Se crea una conexión a la base de datos y se toma un cursor de este
+    conn = conexionDB()
+    cursor = conn.cursor()
+
+    # Se buscan los productos que tengan un precio menor al precio promedio
+    cursor.execute('SELECT * FROM productos WHERE precio < (SELECT AVG(precio) FROM productos)')
+
+    # Se extraen los datos del cursor y se guardan en la lista 'productos'
+    datos = cursor.fetchall()
+    productos = []
+    for fila in datos:
+        productos.append({
+            "id": fila[0],
+            "nombre": fila[1],
+            "precio": fila[2],
+            "stock": fila[3]
+        })
+
+    # Se cierra la conexión y se regresan los productos encontrados en formato JSON
+    conn.close()
+    return jsonify(productos), 200
+
+# Búsqueda de productos con precio debajo del promedio que tengan stock disponible
+@app.route('/productos/filtrar/precio/bajo/promedio/stock', methods=['GET'])
+def filtrarPrecioBajoPromedioStock():
+    # Se crea una conexión a la base de datos y se toma un cursor de este
+    conn = conexionDB()
+    cursor = conn.cursor()
+
+    # Se buscan los productos que tengan un precio menor al precio promedio y stock disponible
+    cursor.execute('SELECT * FROM productos WHERE precio < (SELECT AVG(precio) FROM productos) AND STOCK > 0')
+
+    # Se extraen los datos del cursor y se guardan en la lista 'productos'
+    datos = cursor.fetchall()
+    productos = []
+    for fila in datos:
+        productos.append({
+            "id": fila[0],
+            "nombre": fila[1],
+            "precio": fila[2],
+            "stock": fila[3]
+        })
+
+    # Se cierra la conexión y se regresan los productos encontrados en formato JSON
+    conn.close()
+    return jsonify(productos), 200
+
+# Búsqueda de productos con precio sobre el promedio que tengan stock disponible
+@app.route('/productos/filtrar/precio/sobre/promedio/stock', methods=['GET'])
+def filtrarPrecioSobrePromedioStock():
+    # Se crea una conexión a la base de datos y se toma un cursor de este
+    conn = conexionDB()
+    cursor = conn.cursor()
+
+    # Se buscan los productos que tengan un precio mayor al precio promedio y stock disponible
+    cursor.execute('SELECT * FROM productos WHERE precio > (SELECT AVG(precio)FROM productos) AND stock > 0')
+
+    # Se extraen los datos del cursor y se guardan en la lista 'productos'
+    datos = cursor.fetchall()
+    productos = []
+    for fila in datos:
+        productos.append({
+            "id": fila[0],
+            "nombre": fila[1],
+            "precio": fila[2],
+            "stock": fila[3]
+        })
+
+    # Se cierra la conexión y se regresan los productos encontrados en formato JSON
+    conn.close()
+    return jsonify(productos), 200
+
 # Instrucción para empezar la aplicación Flask
 app.run(debug=True)
